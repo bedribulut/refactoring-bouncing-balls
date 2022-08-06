@@ -6,6 +6,9 @@ const ctx = canvas.getContext('2d');
 const width = canvas.width = window.innerWidth;
 const height = canvas.height = window.innerHeight;
 
+// creating a variable that stores a reference to the paragraph.
+const para = document.querySelector('p');
+
 // function to generate random number
 
 function random(min, max) {
@@ -81,6 +84,7 @@ class Ball extends Shape {
 
 }
 
+
 class EvilCircle extends Shape {
 
    constructor(x, y) {
@@ -116,19 +120,19 @@ class EvilCircle extends Shape {
 
    checkBounds() {
       if ((this.x + this.size) >= width) {
-         this.x = this.x + this.size - this.velX;
+         this.x -= this.size;
       }
 
       if ((this.x - this.size) <= 0) {
-         this.x = this.x - this.size + this.velX;
+         this.x += this.size;
       }
 
       if ((this.y + this.size) >= height) {
-         this.y = this.y + this.size - this.velY;
+         this.y -= this.size;
       }
 
       if ((this.y - this.size) <= 0) {
-         this.y = this.y - this.size + this.velY;
+         this.y += this.size;
       }
    }
 
@@ -141,6 +145,9 @@ class EvilCircle extends Shape {
 
             if (distance < this.size + ball.size) {
                ball.exists = false;
+               ballNum--;
+               para.textContent = `Ball count: ${ballNum}`;
+
             }
          }
       }
@@ -149,9 +156,9 @@ class EvilCircle extends Shape {
 }
 
 const balls = [];
-const evilCircle = new EvilCircle(20,50);
+const evilCircle = new EvilCircle(60,150);
 
-while (balls.length < 25) {
+while (balls.length < 33) {
    const size = random(10,20);
    const ball = new Ball(
       // ball position always drawn at least one ball width
@@ -167,6 +174,12 @@ while (balls.length < 25) {
   balls.push(ball);
 }
 
+let ballNum = balls.length;
+
+//I defined para.textContent here for it to show initial total number of balls.
+para.textContent = `Ball count: ${ballNum}`;
+
+
 function loop() {
    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
    ctx.fillRect(0, 0,  width, height);
@@ -177,11 +190,11 @@ function loop() {
          ball.update();
          ball.collisionDetect();
       }
-   }
 
-   evilCircle.draw();
-   evilCircle.checkBounds();
-   evilCircle.collisionDetect();
+      evilCircle.draw();
+      evilCircle.checkBounds();
+      evilCircle.collisionDetect();
+   }
 
    requestAnimationFrame(loop);
 }
